@@ -1,5 +1,7 @@
 # key4hep-validation
 
+* [Set up the dedicated Github Runner](https://github.com/key4hep/key4hep-validation/blob/main/self-hosted-runner.md)
+
 ## Workflows
 ### k4MarlinWrapper
 ![badge](https://github.com/key4hep/k4MarlinWrapper/workflows/clang-format-check/badge.svg)

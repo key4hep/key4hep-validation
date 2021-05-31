@@ -1,5 +1,4 @@
 import datetime
-import types
 import os,sys
 import select
 import subprocess
@@ -48,13 +47,13 @@ class Process:
     self.status = None
     self.timeout = self.cfg.getAttr('timeout')
     if self.timeout:
-      assert type(self.timeout) == types.IntType, 'attribute timeout must be an int'
+      assert type(self.timeout) == int, 'attribute timeout must be an int'
     self.timeLimit = self.cfg.getAttr('maxTime')
     if self.timeLimit:
-      assert type(self.timeLimit) == types.IntType, 'attribute maxTime must be an int'
+      assert type(self.timeLimit) == int, 'attribute maxTime must be an int'
     self.virLimit = self.cfg.getAttr('maxVIR')
     if self.virLimit:
-      assert type(self.virLimit) == types.IntType, 'attribute maxVIR must be an int'
+      assert type(self.virLimit) == int, 'attribute maxVIR must be an int'
     self.duration = None
     self.start = None
     self.killed = None

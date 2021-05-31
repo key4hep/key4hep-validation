@@ -1,5 +1,4 @@
 import os
-import types
 import ROOT
 
 class PlotTester:
@@ -14,7 +13,7 @@ class PlotTester:
     self.cut = cfg.getAttr('histTestCut')
     self.testName = self.cfg.getAttr('histTestMeth')
     assert self.testName in PlotTester.testMeth, 'ERROR: unknown test method ' + self.testName 
-    self.refFileNames = (type(plotref) == types.ListType and (plotref,) or ([plotref],))[0]
+    self.refFileNames = (type(plotref) == list and (plotref,) or ([plotref],))[0]
     self.datadir = datadir
     #print('@PlotTester: refFileNames=%s'%self.refFileNames)
     self.fileNames = []

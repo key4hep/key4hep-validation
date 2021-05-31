@@ -1,6 +1,5 @@
 import Utils
 import copy
-import types
 import sys
 from Process import *
 
@@ -21,7 +20,7 @@ class TestWrapper:
     self.plotTester = None
     plotRef = self.cfg.getAttr('plotRef')
     if plotRef:
-      assert type(plotRef) == types.StringType or type(plotRef) == types.ListType
+      assert type(plotRef) == str or type(plotRef) == list
       self.plotTester = Utils.PlotTester(self.cfg, plotRef)
 
   def run(self):

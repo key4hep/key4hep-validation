@@ -1,5 +1,3 @@
-import types
-
 class TestConfig:
 
   defaults = {

@@ -50,7 +50,7 @@ def GetCondorJobStat(schedd):
 
   cmd = ["condor_q", user, "-name", schedd, "-format", '%d.', "ClusterId", "-format", "%d ", "ProcId", "-format", "%d\n", "JobStatus"]
 
-  #print cmd
+  #print(cmd)
 
   output = ""
   for _ in range(100):
@@ -58,10 +58,10 @@ def GetCondorJobStat(schedd):
       output = subprocess.check_output(cmd).strip()
       break
     except subprocess.CalledProcessError:
-      print "Call '%s' failed. Retry. Waiting 10s."%cmd
+      print("Call '%s' failed. Retry. Waiting 10s."%cmd)
       time.sleep(10)
 
-  #print output
+  #print(output)
 
   return output
 
@@ -92,6 +92,6 @@ def MakeAndCD(dir):
     try:
       os.makedirs(dir)
     except OSError:
-      print 'Failed to make dir: ' + dir
+      print('Failed to make dir: ' + dir)
       sys.exit(-1)
   os.chdir(dir)

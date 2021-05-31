@@ -25,7 +25,7 @@ class Process:
 
     print('')
     self.cfg = cfg
-    self.name = name
+    self.name = name or 'test'
     self.logParser = cfg.getAttr('parser') and Parser(cfg) or None
     if self.cfg.getAttr('shell'):
       self.executable = exe

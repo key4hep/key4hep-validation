@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import ROOT
+from . shellUtil import *
 
 class BaseMonitor():
 
@@ -27,7 +28,7 @@ class PidMonitor():
     self.hist = None
 
   def do(self,pid):
-    value = eval("shellUtil." + self.fun + "(%s)" % pid)
+    value = eval(self.fun + "(%s)" % pid)
     if value < self.min:
       self.min = value
     if value > self.max:

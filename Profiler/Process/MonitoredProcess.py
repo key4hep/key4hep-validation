@@ -2,11 +2,10 @@
 # -*- coding:utf-8 -*-
 
 import subprocess
-import time, datetime
-import os
-import types
+import time, datetime, os
 from Profiler.Utils import *
-from Process import *
+from . Process import *
+from Profiler.Utils.histUtil import *
 
 class MonitoredProcess(Process, BaseMonitor):
 
@@ -15,7 +14,7 @@ class MonitoredProcess(Process, BaseMonitor):
     BaseMonitor.__init__(self)
 
     self.interval = self.cfg.getAttr('timeInterval')
-    assert type(self.interval) == types.IntType or type(self.interval) == types.FloatType, 'attribute time interval must be a number'
+    assert type(self.interval) == int or type(self.interval) == float, 'attribute time interval must be a number'
     assert self.interval <= 10 and self.interval >= 0.3, 'attribute time interval must be a number between 0.3 and 10'
     if self.cfg.getAttr('CPUMonitor'):
       self.monitorList.append(CpuMonitor(self.interval))
@@ -50,6 +49,7 @@ class MonitoredProcess(Process, BaseMonitor):
       os.remove(self.logFileName)
 
   def _parseLogFile(self):
-    result, self.fatalLine = self.logParser.parseFile(self.logFileName)
-    if not result:
-      self.status = status.FAIL
+    if self.logParser:
+      result, self.fatalLine = self.logParser.parseFile(self.logFileName)
+      if not result:
+        self.status = status.FAIL

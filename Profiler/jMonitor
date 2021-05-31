@@ -1,0 +1,80 @@
+#!/usr/bin/python
+
+def getParser():
+  import argparse
+
+  argParser = argparse.ArgumentParser()
+  # job limit
+  argParser.add_argument('-T', '--max-time', dest='maxTime', type=int, help='Time limit of process (s), if exceeded, process will be killed')
+  argParser.add_argument('-WT', '--walltime', dest='walltime', help='Time limit of process (hh:mm:ss) for PBS, if exceeded, process will be killed')
+  argParser.add_argument('-M', '--max-memory', dest='maxVIR', type=float, help='Memory limit of process (Mb), if exceeded, process will be killed')
+  # log parser related
+  argParser.add_argument('--enable-parser', dest='parser', action='store_true', help='If enabled, log of the process will be parsed')
+  argParser.add_argument('--disable-parser', dest='parser', action='store_false', help='Disable parser')
+  argParser.add_argument('-p', '--pattern', dest='fatalPattern', help='Python re patterns for the parser')
+  # monitor related
+  argParser.add_argument('--enable-monitor', dest='monitor', action='store_true', help='If enabled, process will be monitored (memory, cpu)')
+  argParser.add_argument('--disable-monitor', dest='monitor', action='store_false', help='Disable monitor')
+  argParser.add_argument('-i', '--interval', dest='interval', type=float, default='0.5', help='Time interval for monitor')
+  # plot reference
+  argParser.add_argument('--enable-plotref', dest='plotref', action='store_true', help='If enabled, results of the process will be compared')
+  argParser.add_argument('--disable-plotref', dest='plotref', action='store_false', help='Disable plotref')
+  argParser.add_argument('-f', '--plotref-files', dest='plotreffile', help='reference file for plot testing')
+  argParser.add_argument('-o', '--plotref-output', dest='plotrefoutput', default='plotcmp.root', help='output root file for plot comparison')
+  argParser.add_argument('-m', '--histtest-method', dest='histtestmeth', choices=['Kolmogorov', 'Chi2'], default='Kolmogorov', help='Method of histogram testing')
+  argParser.add_argument('-c', '--histtest-cut', dest='histtestcut', type=float, default='0.9', help='P-Value cut for histogram testing')
+  # cmd
+  argParser.add_argument('command', help='job to be monitored')
+  argParser.add_argument('-l', '--log-name', dest='log', help='output log file name')
+
+  return argParser
+
+def configureArgs(args):
+  from Utils.TestConfig import TestConfig
+
+  cfg = TestConfig()
+  cfg.setAttr('maxTime', args.maxTime)
+  cfg.setAttr('walltime', args.walltime)
+  cfg.setAttr('maxVIR', args.maxVIR)
+  cfg.setAttr('parser', args.parser)
+  if args.parser and args.fatalPattern:
+    cfg.setAttr('fatalPattern', args.fatalPattern)
+  if args.monitor:
+    cfg.setAttr('CPUMonitor', True)
+    cfg.setAttr('RESMonitor', True)
+    cfg.setAttr('VIRMonitor', True)
+    if args.interval:
+      cfg.setAttr('timeInterval', args.interval)
+  if args.plotref and args.plotreffile:
+    cfg.setAttr('plotRef', args.plotreffile)
+    cfg.setAttr('plotOutput', args.plotrefoutput)
+    cfg.setAttr('histTestMeth', args.histtestmeth)
+    cfg.setAttr('histTestCut', args.histtestcut)
+  if args.log:
+    cfg.setAttr('genLog', True)
+    cfg.setAttr('logName', args.log)
+
+  return cfg
+
+if __name__ == '__main__':
+  parser = getParser()
+  args = parser.parse_args()
+
+  from Utils.TestConfig import TestConfig
+  from TestWrapper import TestWrapper
+
+  cfg = configureArgs(args)
+  runner = TestWrapper(None, args.command, cfg)
+  ok, what = runner.run()
+  msg = '\n\n\nRunning result: '
+  if ok:
+    msg += 'succsess'
+  else:
+    msg += 'fail\n'
+    msg += what
+  if args.log:
+    lf = open(args.log, 'a')
+    lf.write(msg)
+    lf.close()
+  else:
+    print msg

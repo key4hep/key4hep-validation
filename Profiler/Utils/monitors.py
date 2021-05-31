@@ -12,12 +12,6 @@ class BaseMonitor():
     self.rootFile = None
     self.pid = None
 
-  def _createOutput(self):
-    if not self.rootFileName:
-      self.rootFileName = "result.root"
-    self.rootFile = ROOT.TFile(self.rootFileName, "recreate")
-    self.rootFile.cd()
-
 class PidMonitor():
   
   def __init__(self, interval):

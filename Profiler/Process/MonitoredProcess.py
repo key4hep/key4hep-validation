@@ -22,7 +22,6 @@ class MonitoredProcess(Process, BaseMonitor):
       self.monitorList.append(VirtMonitor(self.interval))
     if self.cfg.getAttr('RESMonitor'):
       self.monitorList.append(ResMonitor(self.interval))
-    self.rootFileName = self.name + '_mem.root'
     self.stdout = self.stderr = open(self.logFileName, 'wb+')
 
   def run(self):
@@ -37,10 +36,9 @@ class MonitoredProcess(Process, BaseMonitor):
         monitor.do(self.pid)
       if not self._checkLimit():
         break
-    self._createOutput()
     for monitor in self.monitorList:
       monitor.done()
-      writeMHist(monitor.getHist(), self.rootFile)
+      writeMHistPng(monitor.getHist(), self.name + monitor.name + '.png')
     self._burnProcess()
     if self.status == status.SUCCESS and self.name:
       self.stdout.close()

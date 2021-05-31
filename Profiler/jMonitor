@@ -77,4 +77,4 @@ if __name__ == '__main__':
     lf.write(msg)
     lf.close()
   else:
-    print msg
+    print(msg)

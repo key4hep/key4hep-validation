@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import shellUtil
 import ROOT
 
 class BaseMonitor():

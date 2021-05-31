@@ -19,7 +19,8 @@ class TestConfig:
                'plotRef' : None,
                'cmpOutput' : 'plotcmp.root',
                'histTestMeth' : 'Kolmogorov',
-               'histTestCut' : 0.9
+               'histTestCut' : 0.9,
+               'logName' : 'testLog'
              }
 
   def __init__(self):
@@ -29,10 +30,10 @@ class TestConfig:
     self.config.update(kwa)
 
   def setAttr(self, name, value):
-    assert type(name) == types.StringType, "ERROR: attribute must be of String type!"
+    assert type(name) == str, "ERROR: attribute must be of String type!"
     self.config[name] = value
 
   def getAttr(self, name):
-    if self.config.has_key(name):
+    if name in self.config:
       return self.config[name]
     return None

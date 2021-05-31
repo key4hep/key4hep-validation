@@ -3,8 +3,7 @@ import types
 import os,sys
 import select
 import subprocess
-from Parser import Parser
-from Valprod.Utils import *
+from Profiler.Utils import *
 
 class status:
   (SUCCESS, FAIL, TIMEOUT, OVERFLOW, ANR) = range(0, 5)
@@ -24,7 +23,7 @@ class Process:
 
   def __init__(self, name, exe, cfg):
 
-    print ''
+    print('')
     self.cfg = cfg
     self.name = name
     self.logParser = cfg.getAttr('parser') and Parser(cfg) or None
@@ -88,7 +87,7 @@ class Process:
           break
         # If it is called in analysis step, we print the log info to screen
         if self.cfg.getAttr("step"):
-          for l in data.splitlines(): print "[%d]: "%self.pid, l
+          for l in data.splitlines(): print("[%d]: "%self.pid, l)
         if self.genLog:
           logFile.write(data)
         if self.logParser:
@@ -143,9 +142,9 @@ class Process:
     else:
       self.status = status.FAIL
     #FIXME: it seems that root macro process won't give a 0 return code
-    if type(self.executable) == types.ListType and self.executable[0] == 'root':
+    if type(self.executable) == list and self.executable[0] == 'root':
       self.status = status.SUCCESS
-    if type(self.executable) == types.StringType and self.executable.startswith('root'):
+    if type(self.executable) == str and self.executable.startswith('root'):
       self.status = status.SUCCESS
 
   def _getVirt(self):

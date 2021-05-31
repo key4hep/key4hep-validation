@@ -1,2 +1,2 @@
-from Process import Process
-from MonitoredProcess import MonitoredProcess
+from . Process import Process
+from . MonitoredProcess import MonitoredProcess

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from valprod.utils.TestConfig import TestConfig
+from valprod.process.TestWrapper import TestWrapper
 
 def getParser():
   import argparse
@@ -23,17 +25,16 @@ def getParser():
   # cmd
   argParser.add_argument('command', help='job to be monitored')
   argParser.add_argument('--gen-log', dest='log', action='store_true', help='whether to generate log file')
-  argParser.add_argument('-n', '--name', dest='name', default="test", help='name of the job')
+  argParser.add_argument('-n', '--name', dest='name', default="TEST", help='name of the job')
 
   return argParser
 
 def configureArgs(args):
-  from Utils.TestConfig import TestConfig
 
   cfg = TestConfig()
   cfg.setAttr('maxTime', args.maxTime)
   cfg.setAttr('walltime', args.walltime)
-  cfg.setAttr('maxVIR', args.maxVIR)
+  cfg.setAttr('maxMEM', args.maxVIR)
   cfg.setAttr('parser', args.parser)
   if args.parser and args.fatalPattern:
     cfg.setAttr('fatalPattern', args.fatalPattern)
@@ -49,8 +50,14 @@ def configureArgs(args):
     cfg.setAttr('histTestMeth', args.histtestmeth)
     cfg.setAttr('histTestCut', args.histtestcut)
   if args.log:
+    # Use truncated cmd string + a random number if the test name is not specified
+    if args.name == 'TEST':
+      from random import randrange
+      logname = args.command.replace(" ", "_")[:25] + str(randrange(1000)) + ".log"
+    else:
+      logname = args.name + ".log"
     cfg.setAttr('genLog', True)
-    cfg.setAttr('logName', args.name + ".log")
+    cfg.setAttr('logName', logname)
 
   return cfg
 
@@ -58,21 +65,8 @@ if __name__ == '__main__':
   parser = getParser()
   args = parser.parse_args()
 
-  from Utils.TestConfig import TestConfig
-  from TestWrapper import TestWrapper
-
   cfg = configureArgs(args)
   runner = TestWrapper(args.name, args.command, cfg)
-  ok, what = runner.run()
-  msg = '\n\n\nRunning result: '
-  if ok:
-    msg += 'success'
-  else:
-    msg += 'fail\n'
-    msg += what
-  if args.log:
-    lf = open(args.name + ".log", 'a')
-    lf.write(msg)
-    lf.close()
-  else:
-    print(msg)
+  ok, summary = runner.run()
+  print(summary)
+  print('--------------------------------')

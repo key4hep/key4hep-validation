@@ -75,7 +75,7 @@ Example:
       default: {}
 
   2. local options:
-    options of one single test case, example: mytest.addCase('test2', 'python run.py', timeLimit=900, genLog=True, RESMonitor=True)
+    options of one single test case, example: `mytest.addCase('test2', 'python run.py', timeLimit=900, genLog=True, RESMonitor=True)`
 
     genLog:
       If genLog is set to True, the stdout and stderr of the test case will be recorded. (default: False)

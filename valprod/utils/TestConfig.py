@@ -12,6 +12,7 @@ class TestConfig:
                'RESMonitor' : False,
                'VIRMonitor' : False,
                'timeInterval' : 0.5,
+               'MonBackend': 'root',
                'shell' : True,
                'fatalPattern' : None,
                'plotRef' : None,

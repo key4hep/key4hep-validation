@@ -23,7 +23,7 @@ class Process:
 
   def __init__(self, name, exe, cfg):
 
-    print('Running test: %s' % exe)
+    print('')
     self.cfg = cfg
     self.name = name or 'test'
     self.logParser = cfg.getAttr('parser') and Parser(cfg) or None
@@ -56,6 +56,7 @@ class Process:
     self.fatalLine = None
 
   def run(self):
+    print('Running test: %s' % self.name)
     self.start = datetime.datetime.now()
     self.process = subprocess.Popen(args = self.executable, shell = self.shell, stdout = self.stdout, stderr = subprocess.STDOUT)
     self.pid = self.process.pid
@@ -159,7 +160,9 @@ class Process:
       return mem_now
 
   def outcome(self):
-    summary = 'Running time: %ds. ' % self.duration 
+    summary = ''
+    if self.duration:
+      summary = 'Running time: %ds. ' % self.duration 
     if self.memory_peak:
       summary = summary + 'Peak memory: %dMb' % self.memory_peak
     if self.status == status.SUCCESS:

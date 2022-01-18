@@ -1,7 +1,7 @@
 import copy
 import sys
-from valprod.process.MonitoredProcess import MonitoredProcess
-from valprod.process.Process import Process
+from valprod.workflow.MonitoredProcess import MonitoredProcess
+from valprod.workflow.Process import Process
 
 class TestWrapper:
 

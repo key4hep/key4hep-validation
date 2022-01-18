@@ -4,7 +4,7 @@
 import subprocess
 import time, datetime, os
 from valprod.utils.monitors import *
-from valprod.process.Process import Process,status
+from valprod.workflow.Process import Process,status
 
 class MonitoredProcess(Process, BaseMonitor):
 
@@ -21,11 +21,12 @@ class MonitoredProcess(Process, BaseMonitor):
     monitor_map = {'CPUMonitor': CpuMonitor, 'VIRMonitor': VirtMonitor, 'RESMonitor': ResMonitor}
     for k,v in monitor_map.items():
       if self.cfg.getAttr(k):
-        self.monitorList.append(v(self.interval, self.name))
+        self.monitorList.append(v(self.interval, self.cfg.getAttr('MonBackend'), self.name))
 
     self.stdout = self.stderr = open(self.logFileName, 'wb+')
 
   def run(self):
+    print('Running test: %s' % self.name)
     self.start = datetime.datetime.now()
     self.process = subprocess.Popen(args = self.executable, shell = self.shell, stdout = self.stdout, stderr = self.stderr)
     self.pid = self.process.pid

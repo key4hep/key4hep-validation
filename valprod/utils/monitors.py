@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-import numpy as np
 from valprod.utils.shellUtil import *
 
 class BaseMonitor():
@@ -11,8 +9,9 @@ class BaseMonitor():
 
 class PidMonitor():
   
-  def __init__(self, interval, name):
+  def __init__(self, interval, backend, name):
     self.interval = interval
+    self.backend = backend
     self.test_name = name
     self.min = 0.
     self.max = 1e15
@@ -28,43 +27,61 @@ class PidMonitor():
     self.results.append(value)
 
   def done(self):
-    ntime = len(self.results)
-    time_seq = np.linspace(0, ntime * self.interval, ntime)
-    plt.clf()
-    plt.plot(time_seq, self.results)
-    plt.xlabel(self.xtitle)
-    plt.ylabel(self.ytitle)
-    plt.title(self.title)
-    plt.savefig(self.test_name + '_' + self.monitor_name + '.png')
+    if self.backend == 'matplotlib':
+      import matplotlib.pyplot as plt
+      import numpy as np
+      ntime = len(self.results)
+      time_seq = np.linspace(0, ntime * self.interval, ntime)
+      plt.clf()
+      plt.plot(time_seq, self.results)
+      plt.xlabel(self.xtitle)
+      plt.ylabel(self.ytitle)
+      plt.title(self.title)
+      plt.savefig(self.test_name + '_' + self.monitor_name + '.png')
+
+    if self.backend == 'root':
+      from ROOT import TCanvas, TH1F, TImage
+      ntime = len(self.results)
+      canvas = TCanvas()
+      hist = TH1F(self.test_name, self.title, ntime + 1, 0., ntime * self.interval)
+      hist.GetXaxis().SetTitle(self.xtitle)
+      hist.GetYaxis().SetTitle(self.ytitle)
+      for i in range(ntime):
+        hist.SetBinContent(i, self.results[i])
+      hist.SetStats(0)
+      hist.Draw()
+      img = TImage.Create()
+      img.FromPad(canvas)
+      img.WriteImage(self.test_name + '_' + self.monitor_name + '.png')
 
 class VirtMonitor(PidMonitor):
 
-  def __init__(self, interval, name):
+  def __init__(self, interval, backend, name):
     self.title = "Virtual Memory Usage"
     self.xtitle = "Time [s]"
     self.ytitle = "Virtual Memory Usage [MB]"
     self.fun = "GetVirUse"
     self.monitor_name = "VirMem"
-    PidMonitor.__init__(self,interval, name)
+    PidMonitor.__init__(self,interval,backend,name)
     
 
 class ResMonitor(PidMonitor):
 
-  def __init__(self, interval, name):
+  def __init__(self, interval, backend, name):
     self.title = "Resident Memory Usage"
     self.xtitle = "Time [s]"
     self.ytitle = "Resident Memory Usage [MB]"
     self.fun = "GetMemUse"
     self.monitor_name = "ResMem"
-    PidMonitor.__init__(self,interval, name)
+    PidMonitor.__init__(self,interval,backend,name)
 
 
 class CpuMonitor(PidMonitor):
 
-  def __init__(self, interval, name):
+  def __init__(self, interval, backend, name):
     self.title = "CPU Utilization"
     self.xtitle = "Time [s]"
     self.ytitle = "CPU Utilization [/%]"
     self.fun = "GetCpuRate"
     self.monitor_name = "CPURate"
-    PidMonitor.__init__(self,interval, name)
+    PidMonitor.__init__(self,interval,backend,name)

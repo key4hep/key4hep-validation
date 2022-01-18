@@ -50,3 +50,44 @@ optional arguments:
   --gen-log             whether to generate log file
   -n NAME, --name NAME  name of the job
 ```
+
+### Via the API 
+
+The UnitTest module.   
+
+Example: 
+       mytest = UnitTest()
+       mytest.addCase('test1', 'python run.py')
+       mytest.run()
+
+  1. overall options:
+
+    setTimeLimit: 
+      Time limit (s) of the test case. If running time is exceeded, test case will be killed. (default: None)
+    setVIRtLimit:
+      Virtual memory limit (mb) of the test case. If exceeded, test case will be killed. (default: None)
+    enableCPUMonitor/enableVIRMonitor/enableRESMonitor:
+      If CPU monitor/ virtual memory monitor/ resident memory monitor is enabled, the real time CPU rate/ virtual memory/ resident memory of the test case will be recorded.
+    setFatalPattern:
+      If any of the re pattern is detected, in the stdout and stderr of the test case, it will be killed.
+      default: {}
+
+  2. local options:
+    options of one single test case, example: mytest.addCase('test2', 'python run.py', timeLimit=900, genLog=True, RESMonitor=True)
+
+    genLog:
+      If genLog is set to True, the stdout and stderr of the test case will be recorded. (default: False)
+    maxTime:
+      Time limit (s) of the test case. If running time is exceeded, test case will be killed. (default: None)
+    maxVIR:
+      Virtual memory limit (kb) of the test case. If exceeded, test case will be killed. (default: None)
+    CPUMonitor/RESMonitor/VIRMonitor:
+      If CPU monitor/ virtual memory monitor/ resident memory monitor is enabled, the real time CPU rate/ virtual memory/ resident memory of the test case will be recorded. (default: False)
+    timeInterval:
+      Monitoring interval (s) of the test case. (default: 0.5, range: 0.3-10)
+    plotRef:
+      The plot reference file. If set, the plot output of the test case will be compared. (default: None)
+    histTestMeth:
+      Method of the histogram testing. (default: Kolmogorov, Kolmogorov or Chi2)
+    histTestCut:
+      The P-Value cut of the histogram test. If result is smaller than this cut, the histogram will be treated as inconsistent. (default: 0.9)

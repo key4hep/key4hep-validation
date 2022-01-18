@@ -56,9 +56,11 @@ optional arguments:
 The UnitTest module.   
 
 Example: 
+```
        mytest = UnitTest()
        mytest.addCase('test1', 'python run.py')
        mytest.run()
+```
 
   1. overall options:
 

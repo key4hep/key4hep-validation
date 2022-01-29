@@ -27,12 +27,7 @@ class Process:
     self.cfg = cfg
     self.name = name or 'test'
     self.logParser = cfg.getAttr('parser') and Parser(cfg) or None
-    if self.cfg.getAttr('shell'):
-      self.executable = exe
-      self.shell = True
-    else:
-      self.executable = exe.split()
-      self.shell = False
+    self.executable = exe
     self.genLog = self.cfg.getAttr('genLog')
 
     # Log file name depends on what we are running
@@ -58,7 +53,7 @@ class Process:
   def run(self):
     print('Running test: %s' % self.name)
     self.start = datetime.datetime.now()
-    self.process = subprocess.Popen(args = self.executable, shell = self.shell, stdout = self.stdout, stderr = subprocess.STDOUT)
+    self.process = subprocess.Popen(args = self.executable, stdout = self.stdout, stderr = subprocess.STDOUT)
     self.pid = self.process.pid
     if self.genLog:
       # TODO

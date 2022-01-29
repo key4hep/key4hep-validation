@@ -27,8 +27,9 @@ class MonitoredProcess(Process, BaseMonitor):
 
   def run(self):
     print('Running test: %s' % self.name)
+    print(self.executable)
     self.start = datetime.datetime.now()
-    self.process = subprocess.Popen(args = self.executable, shell = self.shell, stdout = self.stdout, stderr = self.stderr)
+    self.process = subprocess.Popen(args = self.executable, stdout = self.stdout, stderr = self.stderr)
     self.pid = self.process.pid
     while True:
       time.sleep(self.interval)

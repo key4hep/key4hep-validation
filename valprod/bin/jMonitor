@@ -24,7 +24,7 @@ def getParser():
   argParser.add_argument('-m', '--histtest-method', dest='histtestmeth', choices=['Kolmogorov', 'Chi2'], default='Kolmogorov', help='Method of histogram testing')
   argParser.add_argument('-c', '--histtest-cut', dest='histtestcut', type=float, default='0.9', help='P-Value cut for histogram testing')
   # cmd
-  argParser.add_argument('command', help='job to be monitored')
+  argParser.add_argument('command', nargs='+', help='job to be monitored')
   argParser.add_argument('--gen-log', dest='log', action='store_true', help='whether to generate log file')
   argParser.add_argument('-n', '--name', dest='name', default="TEST", help='name of the job')
 

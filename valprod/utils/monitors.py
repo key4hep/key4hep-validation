@@ -26,6 +26,15 @@ class PidMonitor():
       self.max = value
     self.results.append(value)
 
+  def push(self, value):
+    '''Push an external value into the monitored results list'''
+    if value < self.min:
+      self.min = value
+    if value > self.max:
+      self.max = value
+    print(f'Pushed {value} to {self.test_name}')
+    self.results.append(value)
+
   def done(self):
     if self.backend == 'matplotlib':
       import matplotlib.pyplot as plt

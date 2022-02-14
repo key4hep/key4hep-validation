@@ -38,7 +38,8 @@ class Process:
     # Merge stdout and stderr
     self.stdout = self.stderr = subprocess.PIPE
     self.process = None
-    self.pid = None
+    self.parent_pid = None
+    self.child_pids = []
     self.returncode = None
     self.status = None
     self.memory_peak = 0
@@ -50,11 +51,28 @@ class Process:
     self.killed = None
     self.fatalLine = None
 
-  def run(self):
+  def _start_process(self):
     print('Running test: %s' % self.name)
+    print(self.executable)
     self.start = datetime.datetime.now()
     self.process = subprocess.Popen(args = self.executable, stdout = self.stdout, stderr = subprocess.STDOUT)
-    self.pid = self.process.pid
+    self.parent_pid = self.process.pid
+
+    if self.cfg.getAttr("monSubTask"):
+      ## Get children pids recursively. This is important in case the parent process
+      ## is just a thin wrapper.
+      import psutil
+      try:
+        parent = psutil.Process(self.parent_pid)
+        children = parent.children(recursive=True)
+        for child in children:
+          self.child_pids.append(child.pid)
+      except psutil.NoSuchProcess:
+        ## Parent process is not created or has already exited. Do nothing here
+        pass
+
+  def run(self):
+    self._start_process()
     if self.genLog:
       # TODO
       # * allow specify log directory
@@ -85,7 +103,7 @@ class Process:
           break
         # If it is called in analysis step, we print the log info to screen
         if self.cfg.getAttr("step"):
-          for l in data.splitlines(): print("[%d]: "%self.pid, l)
+          for l in data.splitlines(): print("[%d]: "%self.parent_pid, l)
         if self.genLog:
           logFile.write(str(data)+"\n\n")
         if self.logParser:
@@ -120,12 +138,17 @@ class Process:
   def _kill(self):
     if not self.process:
       return
-    import os, signal
+    import signal
     try:
-      os.kill(self.pid, signal.SIGKILL)
+      os.kill(self.parent_pid, signal.SIGKILL)
       os.waitpid(-1, os.WNOHANG)
     except:
       pass
+    for child_pid in self.child_pids:
+      try:
+        os.kill(child_pid, signal.SIGKILL)
+      except:
+        pass
 
   def _parseLog(self, data):
     result, self.fatalLine = self.logParser.parse(data)
@@ -146,10 +169,12 @@ class Process:
       self.status = status.SUCCESS
 
   def _getMem(self):
-    if not self.pid:
+    if not self.parent_pid:
       return 0
     else:
-      mem_now = GetMemUse(self.pid)
+      mem_now = GetMemUse(self.parent_pid)
+      for child_pid in self.child_pids:
+        mem_now = mem_now + GetMemUse(child_pid)
       if mem_now > self.memory_peak:
         self.memory_peak = mem_now
       return mem_now

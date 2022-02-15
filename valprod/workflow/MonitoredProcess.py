@@ -26,17 +26,13 @@ class MonitoredProcess(Process, BaseMonitor):
     self.stdout = self.stderr = open(self.logFileName, 'wb+')
 
   def run(self):
-    print('Running test: %s' % self.name)
-    print(self.executable)
-    self.start = datetime.datetime.now()
-    self.process = subprocess.Popen(args = self.executable, stdout = self.stdout, stderr = self.stderr)
-    self.pid = self.process.pid
+    self._start_process()
     while True:
       time.sleep(self.interval)
       if not self.process.poll() == None:
         break
       for monitor in self.monitorList:
-        monitor.do(self.pid)
+        monitor.do(self.parent_pid, self.child_pids)
       if not self._checkLimit():
         break
     for monitor in self.monitorList:

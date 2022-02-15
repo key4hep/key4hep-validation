@@ -11,6 +11,7 @@ class TestConfig:
                'CPUMonitor' : False,
                'RESMonitor' : False,
                'VIRMonitor' : False,
+               'monSubTask' : True,
                'timeInterval' : 0.5,
                'MonBackend': 'root',
                'fatalPattern' : None,

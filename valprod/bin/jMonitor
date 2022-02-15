@@ -17,6 +17,7 @@ def getParser():
   argParser.add_argument('--enable-monitor', dest='monitor', action='store_true', help='If enabled, process will be monitored (memory, cpu)')
   argParser.add_argument('-i', '--interval', dest='interval', type=float, default='0.5', help='Time interval for monitor')
   argParser.add_argument('-b', '--monitor-backend', dest='monitor_backend', default='root', choices=['root', 'matplotlib'], help='Backend for drawing monitoring figures')
+  argParser.add_argument('-s', '--mon-subprocess', dest='monSubTask', action='store_true', help='whether monitor the sub-processes')
   # plot reference
   argParser.add_argument('--enable-plotref', dest='plotref', action='store_true', help='If enabled, results of the process will be compared')
   argParser.add_argument('-f', '--plotref-files', dest='plotreffile', help='reference file for plot testing')
@@ -46,6 +47,7 @@ def configureArgs(args):
     cfg.setAttr('VIRMonitor', True)
     if args.interval:
       cfg.setAttr('timeInterval', args.interval)
+  cfg.setAttr('monSubTask', args.monSubTask)
   if args.plotref and args.plotreffile:
     cfg.setAttr('plotRef', args.plotreffile)
     cfg.setAttr('plotOutput', args.plotrefoutput)

@@ -18,13 +18,18 @@ class PidMonitor():
     self.results = []
     self.hist = None
 
-  def do(self,pid):
-    value = eval(self.fun + "(%s)" % pid)
-    if value < self.min:
-      self.min = value
-    if value > self.max:
-      self.max = value
-    self.results.append(value)
+  def do(self,parent_pid,child_pids):
+    sum_value = 0.0
+    all_pid = [parent_pid] + child_pids
+
+    for pid in all_pid:
+      value = eval(self.fun + "(%s)" % pid)
+      if value < self.min:
+        self.min = value
+      if value > self.max:
+        self.max = value
+      sum_value = sum_value + value
+    self.results.append(sum_value)
 
   def done(self):
     if self.backend == 'matplotlib':

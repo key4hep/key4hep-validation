@@ -58,7 +58,7 @@ class Process:
     self.process = subprocess.Popen(args = self.executable, stdout = self.stdout, stderr = subprocess.STDOUT)
     self.parent_pid = self.process.pid
 
-    if self.cfg.getAttr("monSubTask"):
+    if self.cfg.getAttr("monSubTask") and not self.cfg.getAttr("prmon"):
       ## Get children pids recursively. This is important in case the parent process
       ## is just a thin wrapper.
       import psutil

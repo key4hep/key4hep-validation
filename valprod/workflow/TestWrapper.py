@@ -11,7 +11,7 @@ class TestWrapper:
     self.cfg.update(**kwa)
 
     # Setup sub-process
-    for attr in ['CPUMonitor', 'RESMonitor', 'VIRMonitor']:
+    for attr in ['CPUMonitor', 'RESMonitor', 'VIRMonitor', 'prmon']:
       if self.cfg.getAttr(attr):
         self.subprocess = MonitoredProcess(name, cmd, self.cfg)
         break

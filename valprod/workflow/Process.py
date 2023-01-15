@@ -31,7 +31,11 @@ class Process:
     self.genLog = self.cfg.getAttr('genLog')
 
     # Log file name depends on what we are running
-    self.logFileName = self.cfg.getAttr('logName') or self.name + '.log'
+    logname = self.cfg.getAttr('logName')
+    if logname:
+      self.logFileName = logname
+    else:
+      self.logFileName = self.name + '.log'
     if self.cfg.getAttr('step'):
         self.logFileName = self.cfg.getAttr('step')+'.log'
 
@@ -58,18 +62,20 @@ class Process:
     self.process = subprocess.Popen(args = self.executable, stdout = self.stdout, stderr = subprocess.STDOUT)
     self.parent_pid = self.process.pid
 
-    if self.cfg.getAttr("monSubTask") and not self.cfg.getAttr("prmon"):
-      ## Get children pids recursively. This is important in case the parent process
-      ## is just a thin wrapper.
+    ## Get children pids recursively. This is important in case the parent process
+    ## is just a thin wrapper.
+    try:
       import psutil
-      try:
-        parent = psutil.Process(self.parent_pid)
-        children = parent.children(recursive=True)
-        for child in children:
-          self.child_pids.append(child.pid)
-      except psutil.NoSuchProcess:
-        ## Parent process is not created or has already exited. Do nothing here
-        pass
+    except:
+      return
+    try:
+      parent = psutil.Process(self.parent_pid)
+      children = parent.children(recursive=True)
+      for child in children:
+        self.child_pids.append(child.pid)
+    except psutil.NoSuchProcess:
+      ## Parent process is not created or has already exited. Do nothing here
+      pass
 
   def run(self):
     self._start_process()

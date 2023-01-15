@@ -14,7 +14,7 @@ class Workflow:
 
   def addStep(self, name, cmd, **kwa):
     # Creation of the TestWrapper objects will be delayed
-    self.stepCFG.append([name, cmd, kwa]) 
+    self.stepCFG.append([name, cmd.split(), kwa]) 
 
   def setOverallCFG(self, cfg):
     self.overallCFG = cfg

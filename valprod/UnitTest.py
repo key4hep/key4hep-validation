@@ -66,19 +66,19 @@ class UnitTest:
     self.runner.run(self.suite)
 
   def setTimeLimit(self, value):
-    self.defaultCFG.setAttr("TimeLimit", value)
+    self.defaultCFG.setAttr("maxTime", value)
 
   def setVIRLimit(self, value):
-    self.defaultCFG.setAttr("VIRLimit", value)
+    self.defaultCFG.setAttr("maxVIR", value)
 
-  def enableCPUMonitor(self):
-    self.defaultCFG.setAttr("CPUMonitor", True)
+  def enableProfile(self):
+    self.defaultCFG.setAttr("profile", True)
 
-  def enableVIRMonitor(self):
-    self.defaultCFG.setAttr("VIRMonitor", True)
+  def enablePerf(self):
+    self.defaultCFG.setAttr("perf", True)
 
-  def enableRESMonitor(self):
-    self.defaultCFG.setAttr("RESMonitor", True)
+  def enableIOProfile(self):
+    self.defaultCFG.setAttr("profileIO", True)
 
   def setFatalPattern(self, value):
     self.defaultCFG.setAttr("fatalPattern", value)

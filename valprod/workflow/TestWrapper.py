@@ -2,20 +2,28 @@ import copy
 import sys
 from valprod.workflow.MonitoredProcess import MonitoredProcess
 from valprod.workflow.Process import Process
+from valprod.utils.TestConfig import *
 
 class TestWrapper:
 
-  def __init__(self, name, cmd, cfg, **kwa):
+  def __init__(self, name, cmd, cfg=None, **kwa):
     self.subprocess = None
-    self.cfg = copy.deepcopy(cfg)
+    if cfg:
+      self.cfg = cfg
+    else:
+      self.cfg = copy.deepcopy(globalConfig)
     self.cfg.update(**kwa)
 
+    if self.cfg.getAttr('profile') and (not self.cfg.getAttr('monitorBackend')):
+      # Ues ps by default
+      self.cfg.setAttr('monitorBackend', 'ps')
+      
+
     # Setup sub-process
-    for attr in ['CPUMonitor', 'RESMonitor', 'VIRMonitor', 'prmon']:
-      if self.cfg.getAttr(attr):
-        self.subprocess = MonitoredProcess(name, cmd, self.cfg)
-        break
-    if not self.subprocess: self.subprocess = Process(name, cmd, self.cfg)
+    if self.cfg.getAttr('monitorBackend'):
+      self.subprocess = MonitoredProcess(name, cmd, self.cfg)
+    else:
+      self.subprocess = Process(name, cmd, self.cfg)
 
     # Setup plot reference
     self.plotTester = None

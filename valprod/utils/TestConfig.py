@@ -2,25 +2,24 @@ class TestConfig:
 
   defaults = {
                'verbose' : False,
-               'genLog' : False,
+               'genLog' : True,
                'logFileName' : None,
                'maxTime' : None,
                'walltime' : None,
                'maxVIR' : None,
-               'parser' : True,
-               'CPUMonitor' : False,
-               'RESMonitor' : False,
-               'VIRMonitor' : False,
-               'monSubTask' : False,
-               'prmon' : False,
-               'timeInterval' : 0.5,
-               'MonBackend': 'root',
+               'parser' : False,
+               'profile' : False,
+               'timeInterval' : 5,
+               'monitorBackend': None,  # ps or prmon
+               'plottingBackend': 'root', # root or matplotlib
+               'perf': False,
+               'profileIO': False,
                'fatalPattern' : None,
                'plotRef' : None,
                'cmpOutput' : 'plotcmp.root',
                'histTestMeth' : 'Kolmogorov',
                'histTestCut' : 0.9,
-               'logName' : 'testLog'
+               'logName' : None
              }
 
   def __init__(self):
@@ -37,3 +36,8 @@ class TestConfig:
     if name in self.config:
       return self.config[name]
     return None
+
+  def getConfig(self):
+    return self.config
+
+globalConfig = TestConfig()
